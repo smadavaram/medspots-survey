@@ -1,0 +1,896 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="color-scheme" content="light dark" />
+    <link rel="icon" href="data:," />
+    <title>Medspots — Tell us how your clinic day really runs</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,600;8..60,700&family=Public+Sans:wght@400;500;600;700&family=Noto+Sans+Telugu:wght@400;500;600&family=Noto+Sans+Devanagari:wght@400;500;600&display=swap" rel="stylesheet" />
+    <style>
+      :root {
+        color-scheme: light dark;
+        --bg: #f7f8f6;
+        --surface: #ffffff;
+        --ink: #16211c;
+        --ink-soft: #43524a;
+        --line: #d8ded9;
+        --accent: #0c6b4f;
+        --accent-strong: #09553f;
+        --accent-soft: #e3f0ea;
+        --on-accent: #ffffff;
+        --error: #b3261e;
+        --focus: #0c6b4f;
+        --shadow: 0 1px 2px rgba(22, 33, 28, 0.06), 0 8px 24px rgba(22, 33, 28, 0.06);
+      }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --bg: #101613;
+          --surface: #182019;
+          --ink: #eef3ef;
+          --ink-soft: #a9b8ae;
+          --line: #33413a;
+          --accent: #4cc79b;
+          --accent-strong: #6fd8b2;
+          --accent-soft: #1d2f27;
+          --on-accent: #101613;
+          --error: #f2b8b5;
+          --focus: #4cc79b;
+          --shadow: 0 1px 2px rgba(0, 0, 0, 0.35), 0 8px 24px rgba(0, 0, 0, 0.3);
+        }
+      }
+      * { box-sizing: border-box; }
+      html { -webkit-text-size-adjust: 100%; }
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--ink);
+        font-family: "Public Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+        font-size: 17px;
+        line-height: 1.55;
+      }
+      .wrap {
+        max-width: 640px;
+        margin: 0 auto;
+        padding: 28px 18px 56px;
+      }
+      .brand {
+        font-size: 15px;
+        font-weight: 700;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: var(--accent);
+        margin: 0 0 14px;
+      }
+      .page-intro {
+        margin: 0 0 26px;
+      }
+      .page-intro-block {
+        padding: 18px 0;
+        border-top: 1px solid var(--line);
+      }
+      .page-intro-block:first-child {
+        border-top: none;
+        padding-top: 2px;
+      }
+      .page-intro-block:last-child {
+        padding-bottom: 4px;
+      }
+      .page-intro p {
+        margin: 0 0 10px;
+        font-size: 17px;
+        line-height: 1.6;
+        color: var(--ink);
+      }
+      .page-intro p:last-child { margin-bottom: 0; }
+      .page-intro [lang="te"] {
+        font-family: "Noto Sans Telugu", "Public Sans", system-ui, sans-serif;
+      }
+      .page-intro [lang="hi"] {
+        font-family: "Noto Sans Devanagari", "Public Sans", system-ui, sans-serif;
+      }
+      .lang-label {
+        display: block;
+        font-size: 12.5px;
+        font-weight: 700;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: var(--ink-soft);
+        margin-bottom: 8px;
+      }
+      /* Tabs */
+      .tabs {
+        display: flex;
+        gap: 6px;
+        background: var(--surface);
+        border: 1.5px solid var(--line);
+        border-radius: 12px;
+        padding: 6px;
+        margin: 0 0 28px;
+        box-shadow: var(--shadow);
+      }
+      .tab-btn {
+        flex: 1 1 0;
+        min-height: 54px;
+        border: none;
+        border-radius: 8px;
+        background: transparent;
+        color: var(--ink-soft);
+        font: inherit;
+        font-size: 15.5px;
+        font-weight: 600;
+        line-height: 1.3;
+        cursor: pointer;
+        padding: 10px 8px;
+      }
+      .tab-btn[aria-selected="true"] {
+        background: var(--accent);
+        color: var(--on-accent);
+      }
+      .tab-btn:focus-visible {
+        outline: 2px solid var(--focus);
+        outline-offset: 2px;
+      }
+      [hidden] { display: none !important; }
+      h1 {
+        font-family: "Source Serif 4", Georgia, serif;
+        font-size: 30px;
+        line-height: 1.2;
+        font-weight: 700;
+        margin: 0 0 14px;
+      }
+      .intro {
+        color: var(--ink-soft);
+        margin: 0 0 12px;
+        font-size: 17px;
+      }
+      .privacy-note {
+        display: flex;
+        gap: 10px;
+        align-items: flex-start;
+        background: var(--accent-soft);
+        border-radius: 10px;
+        padding: 12px 14px;
+        font-size: 15px;
+        margin: 18px 0 26px;
+      }
+      .privacy-note svg { flex: 0 0 auto; margin-top: 2px; }
+      form { display: block; }
+      .field { margin-bottom: 26px; }
+      label.q, .q-label {
+        display: block;
+        font-weight: 600;
+        font-size: 17px;
+        margin-bottom: 8px;
+      }
+      .hint {
+        display: block;
+        font-weight: 400;
+        font-size: 14.5px;
+        color: var(--ink-soft);
+        margin-top: 2px;
+      }
+      input[type="text"], input[type="number"], textarea, select {
+        width: 100%;
+        font: inherit;
+        color: var(--ink);
+        background: var(--surface);
+        border: 1.5px solid var(--line);
+        border-radius: 10px;
+        padding: 13px 14px;
+        min-height: 52px;
+      }
+      textarea { min-height: 96px; resize: vertical; }
+      input[type="text"]:focus, input[type="number"]:focus, textarea:focus, select:focus {
+        outline: 2px solid var(--focus);
+        outline-offset: 1px;
+        border-color: var(--focus);
+      }
+      .roles, .options {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 10px;
+      }
+      @media (min-width: 520px) {
+        .roles, .options.cols-2 { grid-template-columns: 1fr 1fr; }
+        .options.cols-3 { grid-template-columns: 1fr 1fr 1fr; }
+      }
+      .role, .option {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        background: var(--surface);
+        border: 1.5px solid var(--line);
+        border-radius: 10px;
+        padding: 14px;
+        min-height: 56px;
+        cursor: pointer;
+        font-size: 16px;
+        font-weight: 500;
+      }
+      .role input[type="radio"], .option input[type="radio"], .option input[type="checkbox"] {
+        width: 22px;
+        height: 22px;
+        flex: 0 0 auto;
+        accent-color: var(--accent);
+        margin: 0;
+      }
+      .role:has(input:checked), .option:has(input:checked) {
+        border-color: var(--accent);
+        background: var(--accent-soft);
+      }
+      .role:focus-within, .option:focus-within {
+        outline: 2px solid var(--focus);
+        outline-offset: 1px;
+      }
+      .check-list {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 10px;
+      }
+      .sub-label {
+        display: block;
+        font-weight: 600;
+        font-size: 15.5px;
+        margin: 20px 0 8px;
+      }
+      .sub-label:first-of-type { margin-top: 4px; }
+      /* Locations */
+      .location-row {
+        background: var(--surface);
+        border: 1.5px solid var(--line);
+        border-radius: 12px;
+        padding: 16px;
+        margin-bottom: 12px;
+      }
+      .location-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        margin-bottom: 12px;
+      }
+      .location-title {
+        font-weight: 700;
+        font-size: 15px;
+      }
+      .btn-remove {
+        border: 1.5px solid var(--line);
+        background: var(--bg);
+        color: var(--ink);
+        font: inherit;
+        font-size: 14px;
+        font-weight: 600;
+        border-radius: 8px;
+        min-height: 40px;
+        padding: 8px 12px;
+        cursor: pointer;
+      }
+      .location-grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 12px;
+      }
+      @media (min-width: 520px) {
+        .location-grid { grid-template-columns: 1fr 1fr; }
+      }
+      .mini-label {
+        display: block;
+        font-size: 14.5px;
+        font-weight: 600;
+        margin-bottom: 6px;
+      }
+      .btn-add {
+        display: block;
+        width: 100%;
+        min-height: 52px;
+        border: 1.5px dashed var(--accent);
+        border-radius: 10px;
+        background: var(--accent-soft);
+        color: var(--accent-strong);
+        font: inherit;
+        font-size: 16px;
+        font-weight: 700;
+        cursor: pointer;
+        padding: 12px 16px;
+      }
+      /* Days */
+      .days {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+      .day {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: var(--surface);
+        border: 1.5px solid var(--line);
+        border-radius: 999px;
+        padding: 10px 14px;
+        min-height: 48px;
+        cursor: pointer;
+        font-size: 15.5px;
+        font-weight: 500;
+      }
+      .day input[type="checkbox"] {
+        width: 20px;
+        height: 20px;
+        accent-color: var(--accent);
+        margin: 0;
+        flex: 0 0 auto;
+      }
+      .day:has(input:checked) {
+        border-color: var(--accent);
+        background: var(--accent-soft);
+      }
+      .day:focus-within {
+        outline: 2px solid var(--focus);
+        outline-offset: 1px;
+      }
+      .section-head {
+        font-size: 13.5px;
+        font-weight: 700;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--ink-soft);
+        margin: 34px 0 18px;
+        padding-top: 22px;
+        border-top: 1px solid var(--line);
+      }
+      .error {
+        display: none;
+        color: var(--error);
+        font-size: 15px;
+        font-weight: 600;
+        margin: 0 0 14px;
+      }
+      .error.show { display: block; }
+      .field.invalid input[type="text"], .field.invalid input[type="number"], .field.invalid textarea { border-color: var(--error); }
+      .field.invalid .location-row { border-color: var(--error); }
+      .actions { margin-top: 30px; }
+      .btn-submit {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        width: 100%;
+        min-height: 58px;
+        border: none;
+        border-radius: 12px;
+        background: var(--accent);
+        color: var(--on-accent);
+        font: inherit;
+        font-size: 18px;
+        font-weight: 700;
+        cursor: pointer;
+        padding: 14px 18px;
+        box-shadow: var(--shadow);
+      }
+      .btn-submit:active { background: var(--accent-strong); }
+      .btn-submit:disabled { opacity: 0.65; cursor: wait; }
+      .send-note {
+        font-size: 14.5px;
+        color: var(--ink-soft);
+        text-align: center;
+        margin: 12px 4px 0;
+      }
+      .thanks {
+        display: none;
+        background: var(--surface);
+        border: 1.5px solid var(--accent);
+        border-radius: 14px;
+        padding: 22px;
+        margin-top: 30px;
+        box-shadow: var(--shadow);
+      }
+      .thanks.show { display: block; }
+      .thanks h2 {
+        font-family: "Source Serif 4", Georgia, serif;
+        font-size: 23px;
+        margin: 0 0 8px;
+      }
+      .thanks p { margin: 0 0 10px; color: var(--ink-soft); }
+      .thanks p:last-child { margin-bottom: 0; }
+      footer {
+        margin-top: 40px;
+        font-size: 14px;
+        color: var(--ink-soft);
+        text-align: center;
+      }
+    </style>
+  </head>
+  <body>
+    <main class="wrap">
+      <p class="brand">Medspots</p>
+
+      <div class="page-intro" aria-label="Introduction">
+        <div class="page-intro-block" lang="en">
+          <p>Doctors are busy people. You run on intuition because there is no time — not because you are careless. Medspots closes that gap.</p>
+          <p><strong>Where to practice:</strong> We study it for you — your current job and engagements, where you live, what is feasible — and tell you where you can build a successful practice: a spot by the hour, or a lease when that fits you better. No buying on a hunch. Your judgement, with proof your time there is worth it.</p>
+          <p><strong>Running your clinic:</strong> Software does the routine work — appointments, reports, follow-ups, billing. And when a patient needs another doctor, the network gets you help on time.</p>
+          <p>Pick a tab below. Two minutes, and your answers come straight to us.</p>
+        </div>
+      </div>
+
+      <div class="tabs" role="tablist" aria-label="What would you like to do?">
+        <button type="button" class="tab-btn" role="tab" id="tab-spot" aria-selected="true" aria-controls="panel-spot">I need a spot</button>
+        <button type="button" class="tab-btn" role="tab" id="tab-requirements" aria-selected="false" aria-controls="panel-requirements" tabindex="-1">I need automation</button>
+      </div>
+
+      <!-- ============ TAB 1: SHARE YOUR REQUIREMENTS ============ -->
+      <section id="panel-requirements" role="tabpanel" aria-labelledby="tab-requirements" hidden>
+        <h1>What should software do for you?</h1>
+        <p class="intro">Tell us what eats your day — appointments, reports, follow-ups, billing, patient messages. We are building clinic software that does the routine work, so you can spend your time on patients.</p>
+
+        <div class="privacy-note">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3l7 3v5c0 4.5-3 8.5-7 10-4-1.5-7-5.5-7-10V6l7-3z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M9 12l2 2 4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span>Your answers go straight to Medspots and are saved in our records, so we can act on them. Nothing is posted publicly.</span>
+        </div>
+
+        <form id="req-form" novalidate>
+          <div class="field" id="field-name">
+            <label class="q" for="name">Your name</label>
+            <input type="text" id="name" name="name" autocomplete="name" placeholder="Dr. …" />
+          </div>
+
+          <div class="field" id="field-role">
+            <span class="q-label" id="role-label">You are a…</span>
+            <div class="roles" role="radiogroup" aria-labelledby="role-label">
+              <label class="role"><input type="radio" name="role" value="Clinic doctor / GP" /> Clinic doctor / GP</label>
+              <label class="role"><input type="radio" name="role" value="Specialist" /> Specialist</label>
+              <label class="role"><input type="radio" name="role" value="Diagnostics / pathology lab owner" /> Diagnostics / pathology lab owner</label>
+              <label class="role"><input type="radio" name="role" value="Pharmacy owner / chemist" /> Pharmacy owner / chemist</label>
+              <label class="role"><input type="radio" name="role" value="Hospital referral desk" /> Hospital referral desk</label>
+              <label class="role"><input type="radio" name="role" value="Patient / member of the public" /> Patient / member of the public</label>
+            </div>
+          </div>
+
+          <div class="field">
+            <label class="q" for="city">City / area</label>
+            <input type="text" id="city" name="city" autocomplete="address-level2" placeholder="e.g. LB Nagar, Hyderabad" />
+          </div>
+
+          <h2 class="section-head">Three questions we ask everyone</h2>
+
+          <div class="field">
+            <label class="q" for="q1" id="q1-label">Who do you send patients to today, and why them?</label>
+            <textarea id="q1" name="q1" rows="3"></textarea>
+          </div>
+
+          <div class="field">
+            <label class="q" for="q2" id="q2-label">What do you wish came back to you that does not come back today?</label>
+            <textarea id="q2" name="q2" rows="3"></textarea>
+          </div>
+
+          <div class="field">
+            <label class="q" for="q3" id="q3-label">What would make you change who you send patients to?</label>
+            <textarea id="q3" name="q3" rows="3"></textarea>
+          </div>
+
+          <h2 class="section-head">Your day, and anything else</h2>
+
+          <div class="field">
+            <label class="q" for="q4">What takes most of your time in a day that software should remove?</label>
+            <textarea id="q4" name="q4" rows="3"></textarea>
+          </div>
+
+          <div class="field">
+            <label class="q" for="q5">Anything else we should know? <span class="hint">Optional — anything about how patients, reports, or referrals move in your world.</span></label>
+            <textarea id="q5" name="q5" rows="3"></textarea>
+          </div>
+
+          <p class="error" id="form-error" role="alert"></p>
+
+          <div class="actions">
+            <button type="submit" class="btn-submit" id="btn-send">Submit my answers</button>
+            <p class="send-note">When you submit, your answers are saved in our records so we can act on them.</p>
+          </div>
+
+          <div class="thanks" id="thanks" aria-live="polite">
+            <h2>Thank you.</h2>
+            <p>Your answers have been saved. What you described here goes directly into what Medspots builds first.</p>
+          </div>
+        </form>
+      </section>
+
+      <!-- ============ TAB 2: I WANT A SPOT ============ -->
+      <section id="panel-spot" role="tabpanel" aria-labelledby="tab-spot">
+        <h1>Tell us where you want a spot</h1>
+        <p class="intro">Medspots offers practice spots by session, week, or month, with no lease. Tell us where you want to sit and how you want it run, so spots get opened where doctors actually want them.</p>
+
+        <div class="privacy-note">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3l7 3v5c0 4.5-3 8.5-7 10-4-1.5-7-5.5-7-10V6l7-3z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M9 12l2 2 4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span>Your answers go straight to Medspots and are saved in our records, so we can act on them. Nothing is posted publicly.</span>
+        </div>
+
+        <form id="spot-form" novalidate>
+          <div class="field" id="field-spot-name">
+            <label class="q" for="spot-name">Your name</label>
+            <input type="text" id="spot-name" name="spot-name" autocomplete="name" placeholder="Dr. …" />
+          </div>
+
+          <div class="field" id="field-spot-specialty">
+            <label class="q" for="spot-specialty">Your specialty</label>
+            <input type="text" id="spot-specialty" name="spot-specialty" placeholder="e.g. General practice, dermatology, paediatrics" />
+          </div>
+
+          <div class="field" id="field-spot-locations">
+            <span class="q-label" id="spot-locations-label">Where do you want a spot?</span>
+            <span class="hint" style="margin:-2px 0 12px;">Add each city and area where you would like to sit. You can add more than one location.</span>
+            <div id="spot-locations"></div>
+            <button type="button" class="btn-add" id="btn-add-location">+ Add another location</button>
+          </div>
+
+          <div class="field" id="field-spot-type">
+            <span class="q-label" id="spot-type-label">What kind of spot?</span>
+            <div class="options" role="radiogroup" aria-labelledby="spot-type-label">
+              <label class="option"><input type="radio" name="spot-type" value="Consultation Room (shared waiting area)" /> Consultation Room <span class="hint" style="margin:0;">— shared waiting area</span></label>
+              <label class="option"><input type="radio" name="spot-type" value="Suite (own waiting area and water inside)" /> Suite <span class="hint" style="margin:0;">— own waiting area and water inside</span></label>
+              <label class="option"><input type="radio" name="spot-type" value="Either is fine" /> Either is fine</label>
+            </div>
+          </div>
+
+          <h2 class="section-head">How often you would sit there</h2>
+
+          <div class="field">
+            <label class="q" for="spot-sessions">Sessions per week</label>
+            <select id="spot-sessions" name="spot-sessions">
+              <option value="">Choose one…</option>
+              <option value="1 session a week">1 session a week</option>
+              <option value="2 sessions a week">2 sessions a week</option>
+              <option value="3 sessions a week">3 sessions a week</option>
+              <option value="4 sessions a week">4 sessions a week</option>
+              <option value="5 sessions a week">5 sessions a week</option>
+              <option value="6 sessions a week">6 sessions a week</option>
+              <option value="Every day">Every day</option>
+              <option value="Not sure yet">Not sure yet</option>
+            </select>
+
+            <span class="sub-label" id="spot-days-label">Preferred days</span>
+            <div class="days" role="group" aria-labelledby="spot-days-label">
+              <label class="day"><input type="checkbox" name="spot-day" value="Monday" /> Mon</label>
+              <label class="day"><input type="checkbox" name="spot-day" value="Tuesday" /> Tue</label>
+              <label class="day"><input type="checkbox" name="spot-day" value="Wednesday" /> Wed</label>
+              <label class="day"><input type="checkbox" name="spot-day" value="Thursday" /> Thu</label>
+              <label class="day"><input type="checkbox" name="spot-day" value="Friday" /> Fri</label>
+              <label class="day"><input type="checkbox" name="spot-day" value="Saturday" /> Sat</label>
+              <label class="day"><input type="checkbox" name="spot-day" value="Sunday" /> Sun</label>
+            </div>
+
+            <span class="sub-label" id="spot-time-label">Morning or evening?</span>
+            <div class="options cols-3" role="radiogroup" aria-labelledby="spot-time-label">
+              <label class="option"><input type="radio" name="spot-time" value="Morning" /> Morning</label>
+              <label class="option"><input type="radio" name="spot-time" value="Evening" /> Evening</label>
+              <label class="option"><input type="radio" name="spot-time" value="Both" /> Both</label>
+            </div>
+          </div>
+
+          <div class="field">
+            <label class="q" for="spot-musthave">What must the spot have for your practice?</label>
+            <span class="hint" style="margin:-4px 0 8px;">Equipment, waiting space, support staff — anything that is essential for you to see patients there.</span>
+            <textarea id="spot-musthave" name="spot-musthave" rows="3"></textarea>
+          </div>
+
+          <h2 class="section-head">How you would like the system to work</h2>
+
+          <div class="field">
+            <span class="q-label" id="spot-system-label">Choose any that would help you</span>
+            <div class="check-list" role="group" aria-labelledby="spot-system-label">
+              <label class="option"><input type="checkbox" name="spot-system" value="I book and manage my slots myself in an app" /> I book and manage my slots myself in an app</label>
+              <label class="option"><input type="checkbox" name="spot-system" value="My patients book on WhatsApp" /> My patients book on WhatsApp</label>
+              <label class="option"><input type="checkbox" name="spot-system" value="Medspots handles my collections and payments" /> Medspots handles my collections and payments</label>
+              <label class="option"><input type="checkbox" name="spot-system" value="Front desk / reception support is provided" /> Front desk / reception support is provided</label>
+              <label class="option"><input type="checkbox" name="spot-system" value="Reports, follow-ups and patient messages come to one inbox" /> Reports, follow-ups and patient messages come to one inbox</label>
+            </div>
+
+            <span class="sub-label" id="spot-pay-label">How would you rather pay?</span>
+            <div class="options cols-2" role="radiogroup" aria-labelledby="spot-pay-label">
+              <label class="option"><input type="radio" name="spot-pay" value="Per session" /> I would rather pay per session</label>
+              <label class="option"><input type="radio" name="spot-pay" value="Monthly dues" /> I would rather pay monthly dues</label>
+            </div>
+          </div>
+
+          <div class="field">
+            <label class="q" for="spot-anything">Anything else? <span class="hint">Optional — anything else about where you want to sit or how you want it run.</span></label>
+            <textarea id="spot-anything" name="spot-anything" rows="3"></textarea>
+          </div>
+
+          <p class="error" id="spot-error" role="alert"></p>
+
+          <div class="actions">
+            <button type="submit" class="btn-submit" id="btn-spot-send">Submit my spot request</button>
+            <p class="send-note">When you submit, your request is saved in our records so we can act on it.</p>
+          </div>
+
+          <div class="thanks" id="spot-thanks" aria-live="polite">
+            <h2>Thank you.</h2>
+            <p>Your spot request has been saved. It helps Medspots open spots where doctors actually want to sit.</p>
+          </div>
+        </form>
+      </section>
+
+      <footer>Medspots is gathering these requirements from doctors and the people around them before building anything.</footer>
+    </main>
+
+    <script>
+      (function () {
+        /* ---------- Tabs ---------- */
+        var tabReq = document.getElementById('tab-requirements');
+        var tabSpot = document.getElementById('tab-spot');
+        var panelReq = document.getElementById('panel-requirements');
+        var panelSpot = document.getElementById('panel-spot');
+        var tabs = [tabSpot, tabReq];
+
+        function selectTab(which, moveFocus) {
+          var isSpot = which === 'spot';
+          tabReq.setAttribute('aria-selected', isSpot ? 'false' : 'true');
+          tabSpot.setAttribute('aria-selected', isSpot ? 'true' : 'false');
+          tabReq.tabIndex = isSpot ? -1 : 0;
+          tabSpot.tabIndex = isSpot ? 0 : -1;
+          panelReq.hidden = isSpot;
+          panelSpot.hidden = !isSpot;
+          if (moveFocus) (isSpot ? tabSpot : tabReq).focus();
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+        tabReq.addEventListener('click', function () { selectTab('requirements', false); });
+        tabSpot.addEventListener('click', function () { selectTab('spot', false); });
+        tabs.forEach(function (tab, i) {
+          tab.addEventListener('keydown', function (e) {
+            if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
+              e.preventDefault();
+              var next = (i + 1) % tabs.length;
+              selectTab(tabs[next] === tabSpot ? 'spot' : 'requirements', true);
+            }
+          });
+        });
+
+        /* ---------- Google Sheets plumbing (via Google Forms formResponse) ---------- */
+        function postToSheet(endpoint, params) {
+          try {
+            fetch(endpoint, {
+              method: 'POST',
+              mode: 'no-cors',
+              headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+              body: params.toString()
+            }).catch(function () { /* fire-and-forget */ });
+          } catch (err) { /* fire-and-forget */ }
+        }
+
+        /* ---------- Tab 1: automation / requirements form ---------- */
+        var form = document.getElementById('req-form');
+        var errorBox = document.getElementById('form-error');
+        var thanks = document.getElementById('thanks');
+        var REQ_ENDPOINT = 'https://docs.google.com/forms/d/e/1FAIpQLScSh__oAObiPpQ2M9GPNyTyLJj2yerFTM138DM98W8YvTDpBw/formResponse';
+
+        var QUESTIONS = {
+          professional: [
+            'Who do you send patients to today, and why them?',
+            'What do you wish came back to you that does not come back today?',
+            'What would make you change who you send patients to?'
+          ],
+          patient: [
+            'Who do you go to first when someone at home falls sick, and why them?',
+            'What do you wish the clinic or lab gave back to you that it does not today?',
+            'What would make you change your clinic or lab?'
+          ]
+        };
+        var currentSet = 'professional';
+
+        function selectedRole() {
+          var checked = form.querySelector('input[name="role"]:checked');
+          return checked ? checked.value : '';
+        }
+
+        function setQuestions(set) {
+          currentSet = set;
+          for (var i = 0; i < 3; i++) {
+            document.getElementById('q' + (i + 1) + '-label').textContent = QUESTIONS[set][i];
+          }
+        }
+
+        form.querySelectorAll('input[name="role"]').forEach(function (radio) {
+          radio.addEventListener('change', function () {
+            setQuestions(selectedRole() === 'Patient / member of the public' ? 'patient' : 'professional');
+            document.getElementById('field-role').classList.remove('invalid');
+          });
+        });
+
+        function val(id) {
+          return document.getElementById(id).value.trim();
+        }
+
+        function validate() {
+          var problems = [];
+          var nameOk = val('name').length > 0;
+          var roleOk = selectedRole().length > 0;
+          document.getElementById('field-name').classList.toggle('invalid', !nameOk);
+          document.getElementById('field-role').classList.toggle('invalid', !roleOk);
+          if (!nameOk) problems.push('your name');
+          if (!roleOk) problems.push('which one describes you');
+          if (problems.length) {
+            errorBox.textContent = 'Before sending, please add ' + problems.join(' and ') + '. Everything else can be as short as you like.';
+            errorBox.classList.add('show');
+            return false;
+          }
+          errorBox.classList.remove('show');
+          return true;
+        }
+
+        document.getElementById('name').addEventListener('input', function () {
+          document.getElementById('field-name').classList.remove('invalid');
+        });
+
+        form.addEventListener('submit', function (e) {
+          e.preventDefault();
+          if (!validate()) {
+            errorBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            return;
+          }
+          var btn = document.getElementById('btn-send');
+          btn.disabled = true;
+          var params = new URLSearchParams();
+          params.append('entry.1938134568', val('name'));
+          params.append('entry.647622714', selectedRole());
+          params.append('entry.1929998703', val('city'));
+          params.append('entry.1788916671', val('q1'));
+          params.append('entry.659704815', val('q2'));
+          params.append('entry.1855570796', val('q3'));
+          params.append('entry.489401273', val('q4'));
+          params.append('entry.1850152776', val('q5'));
+          postToSheet(REQ_ENDPOINT, params);
+          thanks.classList.add('show');
+          thanks.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        });
+
+        /* ---------- Tab 2: spot request form ---------- */
+        var spotForm = document.getElementById('spot-form');
+        var spotError = document.getElementById('spot-error');
+        var spotThanks = document.getElementById('spot-thanks');
+        var locationsBox = document.getElementById('spot-locations');
+        var locationCount = 0;
+        var SPOT_ENDPOINT = 'https://docs.google.com/forms/d/e/1FAIpQLSdIRMBJTC6WcjPIU5bub5PZdcXPp6NfYsAyVb3fBHP4jXf7Wg/formResponse';
+
+        function refreshLocationRows() {
+          var rows = locationsBox.querySelectorAll('.location-row');
+          rows.forEach(function (row, idx) {
+            row.querySelector('.location-title').textContent = 'Location ' + (idx + 1);
+            var rm = row.querySelector('.btn-remove');
+            if (rm) rm.style.display = rows.length > 1 ? '' : 'none';
+          });
+        }
+
+        function addLocation(cityValue, areaValue) {
+          locationCount += 1;
+          var n = locationCount;
+          var row = document.createElement('div');
+          row.className = 'location-row';
+          row.innerHTML =
+            '<div class="location-head"><span class="location-title">Location</span>' +
+            '<button type="button" class="btn-remove">Remove</button></div>' +
+            '<div class="location-grid">' +
+            '<div><label class="mini-label" for="spot-city-' + n + '">City</label>' +
+            '<input type="text" id="spot-city-' + n + '" class="loc-city" placeholder="e.g. Hyderabad" /></div>' +
+            '<div><label class="mini-label" for="spot-area-' + n + '">Area</label>' +
+            '<input type="text" id="spot-area-' + n + '" class="loc-area" placeholder="e.g. LB Nagar" /></div>' +
+            '</div>';
+          if (cityValue) row.querySelector('.loc-city').value = cityValue;
+          if (areaValue) row.querySelector('.loc-area').value = areaValue;
+          row.querySelector('.btn-remove').addEventListener('click', function () {
+            row.remove();
+            refreshLocationRows();
+          });
+          row.querySelector('.loc-city').addEventListener('input', function () {
+            document.getElementById('field-spot-locations').classList.remove('invalid');
+          });
+          locationsBox.appendChild(row);
+          refreshLocationRows();
+          return row;
+        }
+        addLocation('', '');
+
+        document.getElementById('btn-add-location').addEventListener('click', function () {
+          var row = addLocation('', '');
+          var first = row.querySelector('.loc-city');
+          if (first) first.focus();
+        });
+
+        function spotVal(id) { return document.getElementById(id).value.trim(); }
+        function spotRadio(name) {
+          var c = spotForm.querySelector('input[name="' + name + '"]:checked');
+          return c ? c.value : '';
+        }
+        function spotChecked(name) {
+          var out = [];
+          spotForm.querySelectorAll('input[name="' + name + '"]:checked').forEach(function (el) { out.push(el.value); });
+          return out;
+        }
+        function getLocations() {
+          var out = [];
+          locationsBox.querySelectorAll('.location-row').forEach(function (row) {
+            var city = row.querySelector('.loc-city').value.trim();
+            var area = row.querySelector('.loc-area').value.trim();
+            if (city || area) {
+              out.push({ city: city, area: area, label: [city, area].filter(Boolean).join(' — ') });
+            }
+          });
+          return out;
+        }
+
+        function validateSpot() {
+          var problems = [];
+          var nameOk = spotVal('spot-name').length > 0;
+          var specOk = spotVal('spot-specialty').length > 0;
+          var locs = getLocations();
+          var locOk = locs.length > 0 && locs[0].city.length > 0;
+          document.getElementById('field-spot-name').classList.toggle('invalid', !nameOk);
+          document.getElementById('field-spot-specialty').classList.toggle('invalid', !specOk);
+          document.getElementById('field-spot-locations').classList.toggle('invalid', !locOk);
+          if (!nameOk) problems.push('your name');
+          if (!specOk) problems.push('your specialty');
+          if (!locOk) problems.push('the city for your first location');
+          if (problems.length) {
+            spotError.textContent = 'Before sending, please add ' + problems.join(', ').replace(/, ([^,]*)$/, ' and $1') + '. Everything else can be as short as you like.';
+            spotError.classList.add('show');
+            return false;
+          }
+          spotError.classList.remove('show');
+          return true;
+        }
+
+        document.getElementById('spot-name').addEventListener('input', function () {
+          document.getElementById('field-spot-name').classList.remove('invalid');
+        });
+        document.getElementById('spot-specialty').addEventListener('input', function () {
+          document.getElementById('field-spot-specialty').classList.remove('invalid');
+        });
+
+        spotForm.addEventListener('submit', function (e) {
+          e.preventDefault();
+          if (!validateSpot()) {
+            spotError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            return;
+          }
+          var btn = document.getElementById('btn-spot-send');
+          btn.disabled = true;
+          var locs = getLocations();
+          function locField(idx, key) {
+            return locs[idx] ? (locs[idx][key] || '') : '';
+          }
+          var anything = spotVal('spot-anything');
+          if (locs.length > 3) {
+            var extra = locs.slice(3).map(function (l) {
+              return 'Also: ' + [l.city, l.area].filter(Boolean).join(' / ');
+            }).join('\n');
+            anything = [anything, extra].filter(Boolean).join('\n');
+          }
+          var params = new URLSearchParams();
+          params.append('entry.1701320333', spotVal('spot-name'));
+          params.append('entry.240227765', spotVal('spot-specialty'));
+          params.append('entry.1261835765', locField(0, 'city'));
+          params.append('entry.778692437', locField(0, 'area'));
+          params.append('entry.1414575152', locField(1, 'city'));
+          params.append('entry.1303617504', locField(1, 'area'));
+          params.append('entry.1953464562', locField(2, 'city'));
+          params.append('entry.103980963', locField(2, 'area'));
+          params.append('entry.1446772808', spotRadio('spot-type'));
+          params.append('entry.810661013', spotVal('spot-sessions'));
+          var days = spotChecked('spot-day');
+          params.append('entry.1236645604', days.join(', '));
+          params.append('entry.1988428834', spotRadio('spot-time'));
+          params.append('entry.868382237', spotVal('spot-musthave'));
+          spotChecked('spot-system').forEach(function (v) {
+            params.append('entry.1861631868', v);
+          });
+          params.append('entry.640036826', spotRadio('spot-pay'));
+          params.append('entry.709720322', anything);
+          postToSheet(SPOT_ENDPOINT, params);
+          spotThanks.classList.add('show');
+          spotThanks.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        });
+      })();
+    </script>
+  </body>
+</html>
